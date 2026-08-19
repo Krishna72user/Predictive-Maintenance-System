@@ -1,0 +1,31 @@
+data:
+  train_path : data/processed/train.csv
+  test_path : data/processed/test.csv
+  raw_path : data/raw/ai4i2020.csv
+preprocess:
+  split: 0.2
+  seed: 42
+model:
+  RandomForest:
+    n_estimators: 170
+    max_depth: 12
+    max_features: 4
+    max_leaf_nodes: 12
+    min_samples_leaf: 5
+    min_samples_split: 6
+  XGBoost:
+    colsample_bytree: 0.2863131415946436
+    gamma: 0.15714592843367126
+    learning_rate: 0.20092312337913412
+    max_depth: 7
+    n_estimators : 145
+    reg_alpha: 0.6054305695862117
+    reg_lambda: 0.0036084925884026665
+    subsample: 0.723092165494472
+train:
+  model_path: models/model.joblib
+  seed: 42
+  train_data: data/processed/train.csv
+evaluation:
+  metrics: [accuracy,precision,recall,f1_score]
+  path: reports/metrics.json

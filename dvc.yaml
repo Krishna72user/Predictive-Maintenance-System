@@ -1,0 +1,28 @@
+stages:
+  preprocess:
+    cmd: python src/preprocess.py
+    params:
+    - data.raw_path
+    - data.test_path
+    - data.train_path
+    - preprocess.seed
+    deps:
+    - data/raw/ai4i2020.csv
+    - src/preprocess.py
+    outs:
+    - data/processed/test.csv
+    - data/processed/train.csv
+  train:
+    cmd: python src/train.py
+    deps:
+    - data/processed/train.csv
+    - src/train.py
+    outs:
+    - models/model.joblib
+    - reports/metrics.json
+  evaluate:
+    cmd: python src/evaluate.py
+    deps:
+    - data/processed/test.csv
+    - models/model.joblib
+    - src/evaluate.py

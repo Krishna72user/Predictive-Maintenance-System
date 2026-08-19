@@ -1,0 +1,8 @@
+\.virtual_documents
+\.ipynb_checkpoints
+\mlartifacts
+*.db
+*.logs
+\logs
+\__pycache__
+\.vscode
