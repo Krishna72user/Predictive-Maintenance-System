@@ -9,8 +9,8 @@ stages:
       size: 522048
     - path: src/preprocess.py
       hash: md5
-      md5: 013490bf134901bbd8a3ce2ae4fbca76
-      size: 1344
+      md5: 6720bc29187796236256e739dc72f5a1
+      size: 1292
     params:
       params.yaml:
         data.raw_path: data/raw/ai4i2020.csv
@@ -20,44 +20,45 @@ stages:
     outs:
     - path: data/processed/test.csv
       hash: md5
-      md5: 9608b2ca73c3c6a3d4b54b669f8a215b
-      size: 61114
+      md5: 761f6cd9a04b4ce34504af002871afbf
+      size: 92227
     - path: data/processed/train.csv
       hash: md5
-      md5: 77b2c32c3f762d4de93303f9110e6c9a
-      size: 750088
+      md5: 5383a38fd4022d4043465f0bced1bdb9
+      size: 369801
   train:
     cmd: python src/train.py
     deps:
     - path: data/processed/train.csv
       hash: md5
-      md5: 77b2c32c3f762d4de93303f9110e6c9a
-      size: 750088
+      md5: 5383a38fd4022d4043465f0bced1bdb9
+      size: 369801
     - path: src/train.py
       hash: md5
-      md5: efb133f3e47bcc2304bd88b4447e8b42
-      size: 3851
+      md5: 26d3fe5a4980ff5146cff2be56f46c22
+      size: 4449
     outs:
     - path: models/model.joblib
       hash: md5
-      md5: 8b4be20978d34b7440de96b3eacda9c9
-      size: 391154
-    - path: reports/metrics.json
-      hash: md5
-      md5: 3bb247c323dfdf44da37aef0fb1e5e67
-      size: 153
+      md5: 4a0864c3d7a8d6b2066a87481ddbd82c
+      size: 647314
   evaluate:
     cmd: python src/evaluate.py
     deps:
     - path: data/processed/test.csv
       hash: md5
-      md5: 9608b2ca73c3c6a3d4b54b669f8a215b
-      size: 61114
+      md5: 761f6cd9a04b4ce34504af002871afbf
+      size: 92227
     - path: models/model.joblib
       hash: md5
-      md5: 3fbddaa76dc3e4c87620211d6266d805
-      size: 391154
+      md5: 4a0864c3d7a8d6b2066a87481ddbd82c
+      size: 647314
     - path: src/evaluate.py
       hash: md5
-      md5: a984765f9da9edb80c2fe5825728cad7
-      size: 1597
+      md5: 00997043cd7eca322f55b0a75f811c16
+      size: 1762
+    outs:
+    - path: reports/metrics.json
+      hash: md5
+      md5: da46b62afc46d628024994643b471039
+      size: 222

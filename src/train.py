@@ -1,5 +1,5 @@
 from logger import logger
-from xgboost import XGBClassifier
+from dotenv import load_dotenv
 from config import ConfigManager
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
@@ -8,20 +8,16 @@ from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
 from imblearn.over_sampling import SMOTENC
 from sklearn.preprocessing import PowerTransformer,FunctionTransformer,OrdinalEncoder
-from sklearn.metrics import accuracy_score, precision_score,recall_score,f1_score
+from sklearn.metrics import accuracy_score, precision_score,recall_score,f1_score,precision_recall_curve
 import joblib
 import os
 import json
+import mlflow
 
-def func(X):
-    x = X.copy()
-    x["Temperature Difference"] = (
-        x["Process temperature [K]"]
-        - x["Air temperature [K]"]
-    )
-    return x
 def train():
     try:
+        load_dotenv()
+        dagshub_uri =os.getenv('DAGSHUB_URI')
         cm = ConfigManager()
         train_params = cm.load_train_params()
         model_params = cm.load_model_params()['RandomForest']
@@ -55,18 +51,34 @@ def train():
                               max_leaf_nodes=model_params['max_leaf_nodes'],
                               min_samples_leaf = model_params['min_samples_leaf'],
                               max_features=model_params['max_features'],
-                              min_samples_split=model_params['min_samples_split']                       
+                              min_samples_split=model_params['min_samples_split']   ,
+                              class_weight=model_params['class_weight']                   
                               )
         pipe = Pipeline(
         steps= [
-                ('feature_engg',FunctionTransformer(func)),
                 ('preprocessor',preprocessor),
                 ('model',model)
             ]
         )
         pipe.fit(X_train_sampled,y_train_sampled)
         logger.info("Model Training Done")
-        preds = (pipe.predict_proba(X_val)[:,1]>=.55).astype(int)
+
+        signature = mlflow.models.infer_signature(X_train_sampled[:10],pipe.predict(X_train_sampled[:10]))
+
+        mlflow.set_tracking_uri(dagshub_uri)
+        model_info = mlflow.sklearn.log_model(
+            sk_model=pipe,
+            name='RF_model',
+            input_example=X_train_sampled[:10],
+            signature=signature,
+            tags={
+                "model_type": "RandomForest",
+                "tuning_method": "RandomizedSearchCV",
+                "stage": "experiment"},
+                registered_model_name='RF_Pipeline'
+        )
+        preds = (pipe.predict_proba(X_val)[:,1]>=eval_params['threshold']).astype(int)
+
         precision = precision_score(y_val,preds)
         accuracy = accuracy_score(y_val,preds)
         recall = recall_score(y_val,preds)
@@ -79,11 +91,17 @@ def train():
         if os.path.exists(eval_params['path']):
             with open(eval_params['path'], "r") as f:
                 all_metrics = json.load(f)
-        else: all_metrics=[]
-        with open(eval_params['path'],'w') as f:
-            all_metrics.extend([metrics])
-            json.dump(all_metrics,f)
-            logger.info(f"Validation Metrics are saved to {eval_params['path']}")
+        else:
+            all_metrics = []
+
+        all_metrics.append(metrics)
+
+        with open(eval_params['path'], "w") as f:
+            json.dump(all_metrics, f, indent=4)
+
+        logger.info(
+            f"Validation Metrics are saved to {eval_params['path']}"
+        )
 
         joblib.dump(pipe,'models/model.joblib')
         logger.info(f"Pipeline is saved to {train_params['model_path']}")

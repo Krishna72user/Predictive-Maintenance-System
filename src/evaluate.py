@@ -5,7 +5,6 @@ import json
 from config import ConfigManager
 from logger import logger
 import os
-from train import func
 
 def evaluate():
     try:
@@ -20,7 +19,7 @@ def evaluate():
 
         model = joblib.load(train_params['model_path'])
         logger.info("Model Loaded Successfully")
-        preds = (model.predict_proba(X)[:,1]>=.55).astype(int)
+        preds = (model.predict_proba(X)[:,1]>=eval_params['threshold']).astype(int)
 
         acc = accuracy_score(y,preds)
         pr = precision_score(y,preds)
@@ -30,14 +29,22 @@ def evaluate():
         metrics = {"test_metrics":{'precision':pr,'recall':rec,'f1-score':f1,'accuracy':acc}}
 
         if os.path.exists(eval_params['path']):
-            with open(eval_params['path'], "r") as f:
-                all_metrics = json.load(f)
-        else: all_metrics=[]
+            try:
+                with open(eval_params['path'], "r") as f:
+                    all_metrics = json.load(f)
+            except (json.JSONDecodeError, FileNotFoundError):
+                all_metrics = []
+        else:
+            all_metrics = []
 
-        with open(eval_params['path'],'w') as f:
-            all_metrics.extend([metrics])
-            json.dump(all_metrics,f)
-            logger.info(f"Testing Metrics are saved to {eval_params['path']}")
+        all_metrics.append(metrics)
+
+        with open(eval_params['path'], "w") as f:
+            json.dump(all_metrics, f, indent=4)
+
+        logger.info(
+            f"Testing Metrics are saved to {eval_params['path']}"
+        )
        
     except Exception as e:
         logger.exception("Some error occurred in evaluation stage.")

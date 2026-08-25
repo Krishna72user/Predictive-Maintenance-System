@@ -19,10 +19,11 @@ stages:
     - src/train.py
     outs:
     - models/model.joblib
-    - reports/metrics.json
   evaluate:
     cmd: python src/evaluate.py
     deps:
     - data/processed/test.csv
     - models/model.joblib
     - src/evaluate.py
+    outs:
+    - reports/metrics.json
