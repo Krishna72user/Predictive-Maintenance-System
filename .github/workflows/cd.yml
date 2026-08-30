@@ -12,7 +12,7 @@ jobs:
         steps:
             - name: Checkout code
               uses: actions/checkout@v4
-              
+
             - name: Set up python
               uses: actions/setup-python@v5
               with:
@@ -36,3 +36,5 @@ jobs:
 
             - name: Push Docker image
               run: docker push ${{ secrets.DOCKER_USERNAME }}/predictive-maintenance:latest
+            - name: Added deploy hook in CD
+              run: curl -X POST "${{secrets.DEPLOY_HOOK}}"
