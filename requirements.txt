@@ -1,11 +1,10 @@
 # Core Data Science and ML Libraries
-numpy>=1.21.0
-pandas>=1.3.0
-scipy>=1.7.0
-scikit-learn>=1.0
-xgboost>=1.6.0
-imbalanced-learn>=0.9.0
-joblib>=1.1.0
+numpy
+pandas
+scipy
+scikit-learn
+imbalanced-learn
+joblib
 
 # ML Experiment Tracking and Version Control
 mlflow>=2.0.0
@@ -15,8 +14,8 @@ dvc-s3
 dvc-http
 
 # FastAPI and Web Framework
-fastapi[standard]>=0.100.0
-uvicorn[standard]>=0.23.0
+fastapi[standard]
+uvicorn[standard]
 httpx
 
 # Database and ORM
@@ -31,6 +30,7 @@ email-validator
 # Authentication and Security
 passlib[bcrypt]
 PyJWT>=2.8.0
+argon2_cffi
 
 # Environment and Configuration
 python-dotenv>=0.21.0
