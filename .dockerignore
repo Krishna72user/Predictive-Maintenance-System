@@ -25,7 +25,6 @@ __pycache__/
 # ML project artifacts that are usually not needed in a runtime image
 notebooks/
 reports/
-models/
 data/
 /logs
 mlartifacts/
