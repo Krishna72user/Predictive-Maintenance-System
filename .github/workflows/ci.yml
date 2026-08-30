@@ -26,7 +26,8 @@ jobs:
                   pip install -r requirements.txt
             - name: Configure DVC
               run: |
-                dvc remote list
+                dvc remote modify origin --local access_key_id ${{ secrets.ACCESS_KEY_ID}}
+                dvc remote modify origin --local secret_access_key ${{ secrets.SECRETS_ACCESS_KEY}}
             - name: Pull model
               run: dvc pull models/model.joblib
             - name: Test with PyTest
