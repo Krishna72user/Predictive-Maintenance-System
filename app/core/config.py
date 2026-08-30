@@ -6,9 +6,7 @@ class Settings(BaseSettings):
     app_name: str = "Predictive Maintenance API"
     environment: str = "production"
 
-    dagshub_uri:str
     version:str = "latest"
-    model_name:str
 
     model_path:str
     # Database
