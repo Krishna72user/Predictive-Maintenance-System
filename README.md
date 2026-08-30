@@ -273,7 +273,7 @@ FastAPI also provides an OpenAPI specification at:
 
 ## 🔮 Prediction API
 
-### `POST /inference`
+### `POST /predict`
 
 Example request:
 
