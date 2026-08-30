@@ -1,0 +1,36 @@
+# Git and VCS metadata
+.github
+.gitignore
+.gitattributes
+
+
+# Local environment and editor files
+.env
+.env.*
+.venv/
+venv/
+.vscode/
+.idea/
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.log
+.ipynb_checkpoints/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+
+# ML project artifacts that are usually not needed in a runtime image
+notebooks/
+reports/
+models/
+data/
+/logs
+mlartifacts/
+*.db
+
+# Test files aren't required for the runtime image
+tests/
+.pytest_cache/

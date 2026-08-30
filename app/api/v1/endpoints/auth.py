@@ -1,4 +1,4 @@
-from fastapi import APIRouter,Cookie, Response,Depends
+from fastapi import APIRouter,Cookie, Response,Depends,HTTPException
 from typing import Annotated
 from app.schemas.user import UserCreate,LoginUser
 from app.services.user_service import login_user,create_user,get_user
@@ -40,6 +40,9 @@ def logout(response:Response):
 @router.post('/get_user')
 def get_user_profile(session_token: Annotated[str | None, Cookie()] = None):
     if not session_token:
-        return {"error": "Unauthorized: No session cookie provided"}
+        raise HTTPException(
+                    status_code=401,
+                    detail="No session cookie provided"
+                )
     payload = get_user(session_token)
     return {'payload':payload}

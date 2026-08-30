@@ -4,8 +4,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     # Application
     app_name: str = "Predictive Maintenance API"
-    environment: str = "development"
-    debug: bool = False
+    environment: str = "production"
 
     dagshub_uri:str
     version:str = "latest"
@@ -18,7 +17,6 @@ class Settings(BaseSettings):
     secret:str
 
     algorithm: str
-    model_path:str
     # Redis
     # redis_url: str
 
